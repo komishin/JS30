@@ -1,0 +1,1 @@
+javascriptの練習をjavascript30を使って行った学習記録です！
