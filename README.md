@@ -3,10 +3,30 @@
 ## Day 5: Flexbox + JavaScript Image Gallery  (2026/03/11)
 ## 学んだこと
 
-### まず最初に画像が表示されないため、サービス中の画像を表示するように変更しました
+### 上下から文字が出てくるように実装していく
+### まず最初に画像が表示されないため、サービス中の画像を表示するように変更
 
 - flex: 1;指定すると均等に画像が並ぶ
-
+- flex: 5;上の５倍になる
+- transition:
+  font-size 0.7s cubic-bezier(0.61,-0.19, 0.7,-0.11),
+  flex 0.7s cubic-bezier(0.61,-0.19, 0.7,-0.11),
+  background 0.2s;
+  は、フレックスと合わせるとふわっとした動きが可能になる
+- const panels = document.querySelectorAll('.panel');
+  はpanelというなまえのクラスを見つけて名前をつける
+- e.propertyNameは、変化した要素という意味
+  なので、変化したものにflexという文字があったらということになる
+  (ここでは、flexを変化させている！コンソールするとわかる)
+- toggleOpenは自分で定義したなまえ
+- toggleActiveは自分で定義したなまえ
+-  panels.forEach(panel => panel.addEventListener('transitionend', toggleActive));
+  は開ききった動きが終わってから、toggleActiveを実行するという指示
+  動きの段階をつけている
+- panels.forEach(panel => panel.addEventListener('click', toggleOpen));
+  panels.forEach(panel => panel.addEventListener('transitionend', toggleActive));
+  のpanelはどんななまえでも良いがわかりやすくしているだけ
+- あくまでも上から順に動いていくと考えるとわかりやすい
 
 ## Day 4: Cardio Practice (2026/03/09〜10)
 ## 学んだこと
