@@ -1,5 +1,47 @@
 # JavaScript30 学習記録
 
+## Day 6: Ajax Type Ahead with fetch()   (2026/03/12)
+## 学んだこと
+
+## https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json
+を使ってjsonファイルを取得
+
+- fetchんは非同期
+- 普通のプログラムは、何かが終わるまで次の仕事ができませんが、fetch は非同期という特別な仕組み
+  を持っている
+- blobもなんでもいい名前
+- dataもなんでもいい名前
+  ２つの定義が必要なのは、塊を取ってきて、バラバラに並べるというお決まりのパターンで「そうするんだ！しょうがないそう書こう！」と思っておく！
+- .then(翻訳) : まだ「生のデータ」なので、JavaScriptが読める「JSON形式」に翻訳する。
+- .then(実行) : 翻訳が終わったら、ようやくあなたの手元にデータが届く！
+- newは、決まりごとで〇〇を作ってという意味
+- RegExp は Regular Expression（正規表現） の略
+- g (global): 「1つ見つけたら終わり」ではなく、「全部見つけてね！」という意味。
+  i (insensitive): 「大文字と小文字を区別しないでね！」という意味。
+  (これがあるおかげで、new york と打っても New York をちゃんと見つけてくれます。)
+- const searchInput = document.querySelector('.search');
+  const suggestions = document.querySelector('.suggestions');
+  は、探して名前をつけるコード
+- 'change' ってどんなとき？
+   ここでいう 'change' は、検索ボックスに文字を打ち込んで、マウスで別の場所をクリックしたり、Enterキーを押したりして「入力が終わったよ！」となった瞬間のこと。
+  もし「1文字打つたびにすぐ反応してほしい」ときは、'change' の代わりに 'keyup'（キーを離したとき）という言葉を使ったりします。
+- value: 入力欄の中に書いてある「文字」を指す、世界共通の名前。
+- this.value: 「今動かしているこの検索ボックスの、中身」という意味。
+- matchArray: 都市データが入ったカゴ（例：[大分市, 別府市]）
+- .map: 「中のデータを一つずつ取り出して、加工するよ！」
+- place: 今取り出している「1つ分の都市データ」につけた一時的なあだ名
+- join: バラバラのタグを「1つにつなげる」。
+- innerHTML: 画面のリストに「ペタッと貼り付ける」。
+- suggestions.innerHTML = html;は、suggestionというクラスの所に貼り付けなさいということ
+- hl = highlightのこと
+- return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  x.toString(): 「数字の x を、文字に直してね」
+  『文字列でないと、隙間ができない』
+  replace(...): 「特定の場所を、カンマ（,）に置き換えてね」
+  /\B(?=(\d{3})+(?!\d))/g: これが一番難しい「正規表現（せいきひょうげん）」という呪文。
+  「数字を後ろから数えて、3つ並ぶたびにその隙間（すきま）を見つけて！」と命令している。
+
+
 ## Day 5: Flexbox + JavaScript Image Gallery  (2026/03/11)
 ## 学んだこと
 
