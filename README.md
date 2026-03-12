@@ -1,5 +1,20 @@
 # JavaScript30 学習記録
 
+## Day 7:.some().every(),.find()  [...SPREADS] — Array Cardio Day 2 (2026/03/13)
+## 学んだこと
+
+- .some()（サム）は、JavaScriptの合言葉で、「リストの中に、この条件に当てはまる人が一人でも
+ （some）いたら、YES（true）と答えて！」という命令。
+- new Date().getFullYear()は、今の年を取得
+- everyは全員かどうか
+- splice（スプライス）は、リストの途中の要素を切り取ったり入れ替えたりする強力な合言葉。
+- comments.slice(0, index):
+  「0番目（最初）」から「消したい場所（index）」の手前までを切り抜きます。
+- comments.slice(index + 1):
+  「消したい場所の次の番号（index + 1）」から「最後まで」を切り抜きます。
+
+
+
 ## Day 6: Ajax Type Ahead with fetch()   (2026/03/12)
 ## 学んだこと
 
