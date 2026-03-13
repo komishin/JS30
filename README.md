@@ -1,5 +1,65 @@
 # JavaScript30 学習記録
 
+## Day 8: Let's build something fun with HTML5 Canvas (2026/03/13)
+## 学んだこと
+
+- getContext('2d'): その場所で「2D（二次元）の絵筆」を使えるように準備する。
+- 「3Dのバリバリしたグラフィックスを描きたい」となった場合は、getContext('webgl') と書く
+
+- ctx.strokeStyle = '#BADA55';
+  線の色を指定しています。#BADA55 は少し明るい黄緑色。
+
+- ctx.lineJoin = 'round';
+  線のつなぎ目の設定です。round にすることで角がカクカクせず丸みを帯びた滑らかな仕上がりになる。
+
+- ctx.lineCap = 'round';
+  線の端（描き始めと終わり）の設定です。ここも round にすることで、線の先端が丸くなります。
+
+- ctx.lineWidth = 100;
+  線の太さを100ピクセルに設定しています。かなり太いマジックのような筆になります。
+
+- let isDrawing = false;
+  「今、マウスを押して描いているか？」を判定するスイッチ（フラグ）です。クリックしている間
+   だけ true にして描画するように制御します。
+
+- let lastX = 0; / let lastY = 0;
+ 「最後に描いた場所*の座標（X, Y）を保存します。Canvasで線を引くには、「前回の位置から
+  今の位置まで線を結ぶ」という処理を繰り返すため、この「前回の位置」を覚えておく必要があります
+
+- mousedown : マウスのボタンを押した瞬間（描き始め）
+- mousemove : マウスを動かしている間（描画中）
+- mouseup   : マウスのボタンを離した瞬間（描き終わり）
+- mouseout. : マウスがキャンバスの外に出た瞬間（中断）
+
+- canvas.addEventListener('mousedown', (e) => {
+  isDrawing = true;
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+  });はマウスのクリックした場所を記憶するもの
+
+- 「hue（ヒュー）」ってなに？
+   プログラミングやデザインの世界では、色のことを HSL という3つの数字で表すことがよくあります。
+   H (Hue)：色相（しきそう） ← これが今回の hue です！
+   s (Saturation)：彩度（鮮やかさ）
+   L (Lightness)：明度（明るさ）
+
+- if (hue >= 360) {
+    hue = 0;
+  }
+  if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+    direction = !direction;
+  }
+
+  if (direction) {
+    ctx.lineWidth++;
+    } else {
+    ctx.lineWidth--;
+  }
+  は、
+  最初は細いペンで描き始める。
+  描きながら、だんだん太くなっていく。
+  太さが「100」になった瞬間、「あ、太すぎ！」と思って、今度はだんだん細くしていく。
+  太さが「1」になった瞬間、「消えちゃう！」と思って、また太くしていく。
+
 ## Day 7:.some().every(),.find()  [...SPREADS] — Array Cardio Day 2 (2026/03/13)
 ## 学んだこと
 
