@@ -1,6 +1,84 @@
 # JavaScript30 学習記録
 
-## Day 8:  Must Know Chrome Dev Tools Tricks (2026/03/14)
+## Day 10: JS Checkbox Challenge! (2026/03/14)
+## 学んだこと
+
+### 複数の項目を消したいときに活用できるコード
+
+- inputの次のtypeがなくても良さそうだが、CheckBoxを指定していたほうが丁寧
+
+- すべてのチェックボックスに対して...
+  checkboxes.forEach(checkbox => {
+  クリックされたら「handleCheck」という関数を動かしてね！と予約する
+  checkbox.addEventListener('click', handleCheck);
+});
+
+- let lastCheckedで、letを使うのは、最後のチェックは常に変わる可能性があるため。
+
+- let lastChecked;が関数の外にあることによって、毎回、最後のlastChecked = this;が変数
+  内に導入され、前のクリックしたものが記憶される。
+  (「グローバルスコープ（または親のスコープ）」で保持すると言う)
+  ずっと覚えておきたいこと（前回のクリック場所など） → 関数の外
+  その場限りの計算に使いたいこと（今から塗る範囲のフラグなど） → 関数の中
+
+- e.shiftKey	Shiftキー が押されているか
+  e.ctrlKey	Controlキー が押されているか
+  e.altKey	Altキー（MacならOption）が押されているか
+  e.metaKey	Commandキー（Macの⌘）が押されているか
+
+- 最初は inBetween = false（オフ）
+  まだ「範囲内」ではないので、誰もチェックしない。
+
+  「最初にチェックした場所」に到着！
+  ここで inBetween = !inBetween が実行され、false が true（オン） に切り替わる。
+
+  そこから先は「範囲内」
+  スイッチが true になっている間、通過するチェックボックスを次々と true（チェックあり）に書き換えていく。
+
+  「今クリックした場所」に到着！
+  ここで再び inBetween = !inBetween が実行され、true が false（オフ） に戻る。
+
+それ以降は「範囲外」
+スイッチが false に戻ったので、それより下にあるチェックボックスには何もしない。
+
+- なぜ checkbox === this || checkbox === lastChecked なのか？
+  この条件は、「ここがスタート地点、またはゴール地点ですか？」と聞いていることになる。
+
+  this: 今クリックした場所
+
+  lastChecked: 前回クリックして保存しておいた場所
+
+  この2つのどちらかにぶつかるたびに、「ここからが範囲内だよ！」「ここでおしまいだよ！」と、スイッチをパチパチ切り替えている。
+
+- checkboxes.forEach(checkbox => checkbox.addEventListener('click', handleCheck));
+  が一番下にあるのは、シフトが押されなければ、上の条件は発生せず、シフトを押してときは、上のコード
+  の条件で、このコードが実行されるようになるため。
+
+- これは、まず最初は何もない状態ですとinBetweenをfalseの状態にしておいて
+  次にもし、最初にチェックしたものかもしくは、最後にチェックしたものであったら
+  inBetweenをtrueにして、
+  if(inBetween){
+    checkbox.checked = true;
+  }
+  のこーどでチェックを入れていき、次にもし最初にチェックしたものか最後にチェックしたものにきたら
+  そこでinBetweenをfalseにして実行をやめなさいとしている。
+
+- おまけ
+  if 文の「省略形」というルール
+  実は、プログラミングに慣れていない方はよくこのように書く
+
+  これでも正解ですが、少し「丁寧すぎる」書き方
+  if (inBetween === true) {
+    checkbox.checked = true;
+  }
+  しかし、JavaScript（や他の多くの言語）では、「その変数が true かどうかを確認したいだけなら、変数名を書くだけでいい」 という決まりがある。
+  if (inBetween) ＝ 「inBetween は true ですか？」と聞いている。
+  if (!inBetween) ＝ 「inBetween は false ですか？」と聞いている。
+
+- if(inBetween)とかくだけで、もしinBetweenがtrueのときと表現になる.
+
+
+## Day 9:  Must Know Chrome Dev Tools Tricks (2026/03/14)
 ## 学んだこと
 
 - %s：文字列（テキスト）用
