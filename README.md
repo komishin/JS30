@@ -1,5 +1,30 @@
 # JavaScript30 学習記録
 
+## Day 12: CJavaScript KONAMI CODE (2026/03/16)
+## 学んだこと
+
+- window.addEventListener("keydown", ...)
+  ブラウザ画面全体で、「キーが押された（keydown）」瞬間をずっと見張る。
+  (e) => { ... }
+  キーが押された時に実行される関数（処理のまとまり）です。event には「どのキーが押されたか」などの情報が入っている。
+
+- 配列の先頭から、(今の長さ - 秘密の言葉の長さ) 分だけ削除する
+  pressed.splice(-secretCode.length - 1, pressed.length - secretCode.length);
+
+- pressed.join("")
+  pressed は ['w', 'e', 's', 'b', 'o', 's'] のようなバラバラの文字のリスト（配列）。
+  .join("") を使うことで、これらをくっつけて "wesbos" という一つの「文字列」 に変換。
+  .includes(secretCode)
+  変換した文字列の中に、あなたが決めた合言葉（"wesbos" など）が含まれているかを調べます。
+  if (...) { console.log("DING DING DING!"); }
+  もし含まれていたら（一致したら）、コンソールに 「DING DING DING!（ピンポンピンポーン！）」 と当たりを知らせる文字を出します。
+
+- figletというツールをインストール
+  brew install figlet
+  文字を出力
+  figlet CORNIFY
+  これで、アート的な文字をコードエディタに書くことができる
+
 ## Day 11: Custom HTML5 Video Player (2026/03/15)
 ## 学んだこと
 
