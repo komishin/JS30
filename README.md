@@ -1,5 +1,68 @@
 # JavaScript30 学習記録
 
+## Day 14: JavaScript Fundamentals: Reference VS Copy (2026/03/17)
+## 学んだこと
+
+- let age = 100;
+  age という箱に 100 が入る。
+
+  let age2 = age;
+  age の中身（100）をコピーして、新しい age2 という箱に入る。
+
+  重要： ここで二つの箱のつながりは切れる。
+
+  age = 200;
+  age の箱の中身を 200 に書き換える。
+
+  age2 は別の箱なので、100のまま影響を受けない。
+
+- 配列の要素の変更は、矢印の先に表示されるようになっているので動画と挙動が違う
+
+## JavaScriptの「参照」と「コピー」のまとめ
+### このドキュメントでは、JavaScriptを扱う上で最も重要な「値の渡し方」と「安全なデータのコピー方法」についてまとめています。
+
+ 1. 基本的な考え方JavaScriptには、データの種類によって**「コピーのされ方」が2種類**あります。データの種類性質内容プリミティブ型値のコピー数値、文字列、真偽値など。代入すると完全に別のものになる。オブジェクト型参照のコピー配列、オブジェクトなど。代入すると「同じ場所」を指し示す。
+ 
+ 2. 配列のコピー（Array Copying）const team = players; とすると、同じ配列を共有してしまい、片方を変えるともう片方も壊れます（副作用）。これを防ぐための4つのコピー方法です。
+
+ JavaScriptconst players = ['Wes', 'Sarah', 'Ryan', 'Poppy'];
+
+// --- 安全なコピー（新しい配列を作る） ---
+
+// 1. slice() を使う
+const team2 = players.slice();
+
+// 2. [].concat() を使う
+const team3 = [].concat(players);
+
+## ✅ 推奨：一番おすすめ
+// 3. スプレッド構文 (...) を使う
+const team4 = [...players];
+
+// 4. Array.from() を使う
+const team5 = Array.from(players);
+
+3. オブジェクトのコピー（Object Copying）オブジェクトも同様に、直接の代入は「参照」になります。
+
+JavaScriptconst person = {
+  name: 'Wes Bos',
+  age: 80
+};
+
+  1. Object.assign を使う
+  {}（空の箱）に、personの中身を流し込み、さらに追加・上書きをする
+  const cap2 = Object.assign({}, person, { number: 99, age: 12 });
+
+  2. オブジェクトのスプレッド構文を使う
+  const cap3 = { ...person };
+
+4. 注意点：浅いコピー（Shallow Copy）上記の方法（スプレッド構文やObject.assign）は、すべて**「1階層目だけ」**をコピーします。問題点： 配列やオブジェクトの中に、さらに配列やオブジェクトが入っている場合、その「中身の中身」は参照のままつながっています。解決策（Deep Copy）： 完全に別物にするには、一度文字列にしてから戻す手法が使われます。JavaScript// 完全に独立したコピー（ディープコピー）を作る
+const dev2 = JSON.parse(JSON.stringify(wes));
+
+- 現場での教訓「元のデータは変えない」（イミュータブル）が鉄則。データを加工する際は、まずコピー
+  を作ってから作業する癖をつけること。意図しないデータの書き換えは、発見しづらいバグの最大の原因
+  になる。
+
 ## Day 13: Vanilla JavaScript Slide In on Scroll (2026/03/16)
 ## 学んだこと
 
