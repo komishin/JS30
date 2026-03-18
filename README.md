@@ -1,6 +1,88 @@
 # JavaScript30 学習記録
 
-## Day 15: How LocalStorage and Event Delegation work. (2026/03/18)
+## Day 16: CSS Text Shadow on Mouse Move Effect (2026/03/18)
+## 学んだこと
+
+### **Math.round()** は、JavaScriptで**「数値を四捨五入して、一番近い整数にする」**ための魔法の命令。
+  - Math.round(4.4); // 結果は 4 （切り捨て）
+  - Math.round(4.5); // 結果は 5 （切り上げ）
+  - Math.round(4.6); // 結果は 5 （切り上げ）
+
+### ${xWalk * -1}px の中心にある * -1 は、**「数値の符号をひっくり返す」**という役割
+  - xWalk が 10（右に10px移動）なら → -10（左に10px移動）
+  - xWalk が -20（左に20px移動）なら → 20（右に20px移動）
+
+### 🖱️ マウスの動きをキャッチする設定
+`hero.addEventListener("mousemove", shadow);`
+### heroという範囲で、アウスが動いたときはshadowという私が示した関数を実行しなさいということ
+ - 場所 **hero**: マウスを見張る範囲。
+ - きっかけ **mousemove**: マウスが1ピクセルでも動いたら反応する。
+ - やること **shadow**: あらかじめ作っておいた「影を動かす魔法（関数）」を呼び出す。
+
+`const { offsetWidth: width, offsetHeight: height } = hero;`
+**「今、画面に表示されている hero というエリア（文字が入っている大きな枠）の実際の幅と高さ」**を測って、それを width と height という名前の変数（箱）に入れて保存しておく、という意味
+
+### 🛠️ コードの1行解説
+
+1. 要素の取得と定数の設定
+`const hero = document.querySelector('.hero');`
+  - 目的: エフェクトを監視する一番外側の大きな枠（舞台）を取得。
+
+`const text = hero.querySelector('h1');`
+  - 目的: 実際に影を動かす対象となる「文字」を取得。
+
+`const walk = 500;`
+  - 目的: 影が動く最大の「歩幅（500px）」を定義します。この数字を変えると影の勢いが変わる。
+
+2. 関数 shadow(e) の開始
+`function shadow(e)`
+  - 目的: マウスが動いた時に実行する命令書を作る。(e) でマウスの最新レポートを受け取る。
+
+`const { offsetWidth: width, offsetHeight: height } = hero;`
+  - 目的: hero エリアの今の「横幅」と「縦幅」を測って、計算用の変数に入る。
+
+`let { offsetX: x, offsetY: y } = e;`
+  - 目的: レポート e から、マウスの今の「横の位置」と「縦の位置」を取り出す。
+
+3. 座標の補正（重要なロジック）
+`if (this !== e.target)`
+  - 目的: カーソルの位置とheroの位置が完全一致しているかチェック。
+  - これをしていないと文字が飛んでってしまう
+
+`x = x + e.target.offsetLeft;`
+  - 目的: 文字の上に乗ると座標がリセットされるため、文字が左端からどれだけ離れているかを
+         足して修正。
+
+`y = y + e.target.offsetTop;`
+  - 目的: 同様に、文字が上端からどれだけ離れているかを足して、常に全体の左上からの距離に統一
+
+4. 影の移動距離の計算
+`const xWalk = Math.round((x / width * walk) - (walk / 2));`
+  - 目的: マウスの位置を「中心からどれくらい離れているか」の数字に変換し、四捨五入して整数の
+    ピクセル値にする。
+  ### 左端からとなっているものを２で割ることによって中心から−５０から５０というふうに変換しているという考え方
+
+`const yWalk = Math.round((y / height * walk) - (walk / 2));`
+  - 目的: 縦方向についても同様に、中心からのズレを計算します。
+
+5. CSSへの反映（仕上げ）
+`text.style.textShadow = \ ... `;``
+  - 目的: 計算した数字を、CSSの text-shadow プロパティに流し込みます。
+
+`${xWalk}px ${yWalk}px 0 rgba(255,0,255,0.7),`
+  - 目的: 1つ目の影（ピンク）を配置します。
+
+`${xWalk * -1}px ${yWalk}px 0 rgba(0,255,255,0.7),`
+  - 目的: 2つ目の影（水色）を横方向に反転させて配置します。
+
+`${yWalk}px ${xWalk * -1}px 0 rgba(0,255,0,0.7),`
+  - 目的: 3つ目の影（緑）を縦横入れ替えて配置します。
+
+`${yWalk * -1}px ${xWalk}px 0 rgba(0,0,255,0.7)`
+  - 目的: 4つ目の影（青）をさらに別の角度に配置します。
+
+
+## Day 15: How LocalStorage and Event Delegation work. (2026/03/17)
 ## 学んだこと
 
 ### 💾 なぜ LocalStorage が必要なのか
