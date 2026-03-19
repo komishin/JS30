@@ -1,5 +1,16 @@
 # JavaScript30 学習記録
 
+## Day 19: Unreal Webcam Fun with getUserMedia() and HTML5 Canvas (2026/03/19)
+## 学んだこと
+
+## 「まず package.json が手元にあり、その中身（レシピ）を見て npm install が材料（ツール）を揃えてくれる」**という流れ
+
+###  <button onClick="takePhoto()">Take Photo</button>
+  **「HTMLの属性を使って、特定のJavaScript関数を呼び出す設定」**をしています。
+  専門用語では、これを 「インラインイベントハンドラー」 と呼びます。
+
+
+
 ## Day 18: How JavaScript's Array Reduce Works  (2026/03/19)
 ## 学んだこと
 
