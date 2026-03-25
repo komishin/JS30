@@ -1,5 +1,83 @@
 # JavaScript30 学習記録
 
+## Day 27:JavaScript Interface Challenge: Click and Drag to Scroll (2026/03/27)
+## 学んだこと
+
+### 用語解説
+  `mousedown`	マウスのボタンを押し下げた瞬間
+  `mousemove`	マウスを動かしている間ずっと
+  `mouseup`	マウスのボタンを離した瞬間
+  `e.pageX`	ページ全体の左端	スクロールしていても、ページの一番左上からの距離を測れる。
+  `e.clientX`	ブラウザで見えている範囲	スクロールしても、今見えている画面の左端からの距離しか測れない。
+  `e.screenX`	PCモニターの画面全体	ブラウザの外枠も含めた、モニター自体の左端からの距離。
+  `offsetLeft`	左端からの距離
+  `offsetTop`	上端からの距離
+  `offsetWidth`	要素自体の横幅（ボーダーなども含む）
+  `offsetHeight`	要素自体の高さ
+  `scrollLeft`	横にどれくらいスクロールしたか
+  `scrollTop`	縦にどれくらいスクロールしたか
+  `scrollWidth`	スクロールできる中身の「全体の横幅」
+  `scrollHeight`	スクロールできる中身の「全体の高さ」
+  `e.preventDefault()` ここでは、「ブラウザ標準の挙動」を一時的にオフにしています。
+
+
+### コード解説
+
+`const slider = document.querySelector('.items');`
+  * スライドさせる対象となる親要素（.items）を取得して slider に入れています。
+
+`let isDown = false;`
+  * 「今、マウスがクリック（長押し）されているか？」を覚えておくためのスイッチです。
+
+`let startX;`
+  * マウスを**押し下げた瞬間の横位置（X座標）**を保存しておくための変数です。
+
+`let scrollLeft;`
+  * マウスを押し下げた瞬間のスライダーのスクロール位置を保存しておくための変数です。
+
+`slider.addEventListener('mousedown', (e) => {`
+  `isDown = true; // スイッチをONにする`
+  `slider.classList.add('active'); // CSSで見た目を変えるためにクラスを付ける`
+  `startX = e.pageX - slider.offsetLeft; // 画面全体からスライダーの左端を引いた「スライダー内での開始位置」を計算`
+  `scrollLeft = slider.scrollLeft; // その時のスクロールの状態を記録しておく`
+`});`
+
+`slider.addEventListener('mouseleave', () => {`
+  `isDown = false; // マウスが外に出たらスイッチをOFFにする`
+  `slider.classList.remove('active'); // クラスを外す`
+`});`
+
+`slider.addEventListener('mouseup', () => {`
+  `isDown = false; // マウスを離したらスイッチをOFFにする`
+  `slider.classList.remove('active'); // クラスを外す`
+`});`
+
+`slider.addEventListener('mousemove', (e) => {`
+  `if (!isDown) return;  // スイッチがOFF（クリック中じゃない）なら、何もしないで終了`
+  `e.preventDefault(); // ブラウザが勝手にテキストを選択したりするのを防ぐ`
+  `const x = e.pageX - slider.offsetLeft; // 今現在のマウスの位置を計算`
+  `const walk = (x - startX) * 3; // 「最初に押した場所」から「今の場所」までの距離を計算（3倍速で動かす設定）`
+  `slider.scrollLeft = scrollLeft - walk; // 計算した距離を、元のスクロール位置から引き算して画面を動かす`
+`});`
+
+#### 💡 ポイントの解説：なぜ scrollLeft - walk なのか？
+
+  * 右にマウスを動かすと、(x - startX) は プラス になります。
+
+  * スライダーを**右に流す（左側の隠れている部分を見る）**ためには、スクロールの数値は マイナス に動かす必要があります。
+
+  * なので scrollLeft - walk とすることで、直感的にマウスと同じ方向にコンテンツが動くようになっています。
+
+  * この * 3 という数字を大きくすると、少しのマウス移動でたくさんスクロールするようになる。
+
+
+
+
+---
+
+
+
+
 ## Day 26:Stripe Follow Along Dropdown Navigation (2026/03/26)
 ## 学んだこと
 
@@ -426,16 +504,16 @@
 
 4. `.join('')`
      `役割`  map で作った「タグの配列」を、一つの長い文字列に連結しています。
-
+<!--
 5. `voicesDropdown.innerHTML = ...`
      `役割`  最終的に出来上がったHTMLの塊を、画面上のドロップダウンメニュー
-            （<select>タグ）の中身としてガバッと流し込んでいます。
+            の中身としてガバッと流し込んでいます。 -->
 
-<!-- 1. `msg.voice = voices.find(...)`
+1. `msg.voice = voices.find(...)`
     `役割` ブラウザが持っている「声のリスト（voices）」の中から、今ユーザーが選択した
            名前と一致する声を一つだけ探し出し、読み上げ用の箱（msg）の「声の設定」に上書きしています。
 
-    `find` メソッド: 配列の中から、条件に合う最初の1つだけを見つけてくる命令です。 -->
+    `find` メソッド: 配列の中から、条件に合う最初の1つだけを見つけてくる命令です。
 
 2. `voice => voice.name === this.value`
     `this.value` ドロップダウン（selectタグ）で今選ばれている「声の名前
