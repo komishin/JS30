@@ -1,5 +1,111 @@
 # JavaScript30 学習記録
 
+## Day 26:Stripe Follow Along Dropdown Navigation (2026/03/26)
+## 学んだこと
+
+#### 用語解説
+
+  `mouseenter`	マウスカーソルが要素の中に入った瞬間	背景を表示し、位置を計算して移動させる
+  `mouseleave`	マウスカーソルが要素の外に出た瞬間	背景を非表示にし、クラスを削除する
+
+
+#### コード解説
+
+  * .cool > li: ナビゲーションの各メニュー項目（リスト要素）をすべて取得し、triggers という変数に入れています。
+
+  * .dropdownBackground: メニューの背後で動く「白い背景ボックス」を取得しています。
+
+  * .top: ナビゲーション全体の親要素です。座標計算の「基準点」として使います。
+
+  * マウスが乗った項目（this）に trigger-enter クラスを付けます。これでメニューが「表示」状態（display: block など）になります。
+
+  1. setTimeout との関係
+
+    - `setTimeout(() => this.classList.contains('trigger-enter') && this.classList.add('trigger-enter-active'), 150);`
+    (**アロー関数でないとエラーになる**)
+
+    まず、マウスが乗った瞬間に trigger-enter クラスがつきます。
+
+    次に「150ミリ秒待ってね」というタイマー（setTimeout）が動きます。
+
+    150ミリ秒経った後、この () => ... の中身が実行されます。
+
+  2. なぜ contains でチェックするのか？
+     ユーザーが「メニューを高速でシャカシャカ動かしたとき」を想像してみてください。
+
+     `0ms` マウスが乗る（trigger-enter 付与、タイマー開始）
+
+    `50ms` すぐにマウスが外れる（handleLeave が実行され、trigger-enter が削除される）
+
+    `150ms` タイマー発動！
+
+    もし、このチェック（contains）がないと、マウスがもうそこには無いのに、遅れてやってきたタイマーが trigger-enter-active を付けてしまいます。
+    その結果、メニューが消えきらずに中途半端に表示されたり、表示がバグったりする原因になる。
+
+  3. &&（短絡評価）のテクニック
+    A && B という書き方は、**「Aが本当（true）なら、Bを実行する」**というルールがあります。
+
+    もし this.classList.contains('trigger-enter') が true なら
+    （＝まだマウスが乗っているなら）
+    → 右側の this.classList.add(...) を実行して、アニメーションを完了させる。
+
+    もし false なら
+    （＝すでにマウスが外れてクラスが消えているなら）
+    → 右側は無視される。
+
+
+  * 150ミリ秒後に trigger-enter-active クラスを付けます。
+    `this.classList.contains(...)` を確認しているのは、**「150ミリ秒経つ前にマウスが外に出ちゃった場合」**に、アニメーションが始まらないようにするためです。
+
+  * `background.classList.add('open');`
+     背景ボックス（動く白い四角）を表示させます。
+
+  * `const dropdown = this.querySelector('.dropdown');`
+    今マウスが乗っている項目の中にある、ドロップダウンメニュー（実際の中身）を探します。
+
+  * `const dropdownCoords = dropdown.getBoundingClientRect();`
+    `const navCoords = nav.getBoundingClientRect();`
+    getBoundingClientRect(): ブラウザ画面上の正確な位置（上下左右）とサイズ（幅・高さ）を数値で取得します。
+
+  * `const coords = {`
+    `height: dropdownCoords.height,`
+    `width: dropdownCoords.width,`
+    `top: dropdownCoords.top - navCoords.top,`
+    `left: dropdownCoords.left - navCoords.left`
+    `};`
+    - ここで座標のズレを計算しています。
+    - ブラウザ全体の座標から「親ナビゲーションの座標」を引くことで、「親ナビの左上から見て何ピクセル目か」という数値を割り出します。
+
+    * `引き算するとき` 「親要素の中での相対的な位置」を求めたいとき（今回はこちら）。
+    * `足し算するとき` absolute 配置の要素を、スクロールしてもずれないように「ページの一番上からの絶対位置」に置きたいとき（window.scrollY を足すなど）。
+
+  * `background.style.setProperty('width', ``${coords.width}px``);`
+    `background.style.setProperty('height', ``${coords.height}px``);`
+    計算したサイズを、背景ボックスに適用します。これで背景がメニューと同じ大きさになります。
+
+  * `background.style.setProperty('transform',` `translate(${coords.left}px, $. {coords.top}px)``);`
+    `}`
+    背景ボックスを translate（移動）させます。これで、背景が現在のメニューの位置まで滑らかに飛んでいきます。
+
+  *  `function handleLeave() {`
+     `this.classList.remove('trigger-enter', 'trigger-enter-active');`
+     付与していたクラスをすべて削除し、メニューを非表示にします。
+
+  *  `background.classList.remove('open');`
+      動く背景ボックスも非表示（透明など）にします。
+
+  *  `triggers.forEach(trigger => trigger.addEventListener('mouseenter', handleEnter));`
+    `triggers.forEach(trigger => trigger.addEventListener('mouseleave', handleLeave));`
+    すべてのメニュー項目（triggers）に対して、「マウスが入ったとき」と「出たとき」の処理を紐付けています。
+
+
+
+
+---
+
+
+
+
 ## Day 25:JavaScript Event Capture, Propagation and Bubbling(2026/03/25)
 ## 学んだこと
 
@@ -321,9 +427,9 @@
 4. `.join('')`
      `役割`  map で作った「タグの配列」を、一つの長い文字列に連結しています。
 
-<!-- 5. `voicesDropdown.innerHTML = ...`
+5. `voicesDropdown.innerHTML = ...`
      `役割`  最終的に出来上がったHTMLの塊を、画面上のドロップダウンメニュー
-            （<select>タグ）の中身としてガバッと流し込んでいます。 -->
+            （<select>タグ）の中身としてガバッと流し込んでいます。
 
 <!-- 1. `msg.voice = voices.find(...)`
     `役割` ブラウザが持っている「声のリスト（voices）」の中から、今ユーザーが選択した
