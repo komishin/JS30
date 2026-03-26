@@ -1,5 +1,72 @@
 # JavaScript30 学習記録
 
+## Day 28: Video Speed Scrubber (2026/03/26)
+## 学んだこと
+
+### コード解説
+
+`const speed = document.querySelector('.speed');`
+  * 速度バーのコンテナ要素（.speed）を取得して speed に入れています。マウスイベントを登録する対象になります。
+
+`const bar = speed.querySelector('.speed-bar');`
+  * speed の中にある .speed-bar 要素を取得しています。height や textContent を変化させることで、視覚的なバーとラベルを表示します。
+
+`const video = document.querySelector('.flex');`
+  * 動画要素（.flex）を取得しています。再生速度を変更するときに使います。
+
+`function handleMove(e) {`
+  * mousemove イベントが発生したときに呼ばれる関数です。`this` はイベントが登録された要素（.speed）を指します。
+  **e.pageYがあるから、引数に`e`が必要になる**
+
+`const y = e.pageY - this.offsetTop;`
+  * ページ全体の上端からのマウスY座標（e.pageY）から、.speed 要素の上端位置（this.offsetTop）を引くことで、「.speed 要素の内側でのマウスの縦位置」を求めています。
+
+`const percent = y / this.offsetHeight;`
+  * y（要素内の縦位置）を要素の高さ（this.offsetHeight）で割ることで、0〜1の割合（パーセント）に変換しています。上端が0、下端が1になります。
+
+`const min = 0.4;`
+  * 再生速度の最小値を 0.4 倍速に設定しています。
+
+`const max = 4;`
+  * 再生速度の最大値を 4 倍速に設定しています。
+
+`const height = Math.round(percent * 100) + '%';`
+  * percent（0〜1）を 100 倍してパーセント文字列に変換しています。これをバーの height に使って、マウス位置に応じてバーの高さが変わるようにします。
+  `%がないと`
+  1. 「数字」だけではブラウザが困ってしまう
+    * height という言葉は、人間にとっては「高さ」だと分かりますが、ブラウザにとってはただの「箱の名前」に過ぎません。
+
+    * Math.round(percent * 100) だけの場合
+     中身は 50 や 80 といった単なる**「数字」になります。
+     ブラウザに bar.style.height = 50; と命令しても、ブラウザは「50って何？ 50ピクセル？ 50ミリ？ それとも50%？」と迷ってしまい、結局何も動いてくれません。**
+
+  * + '%' を付けた場合
+    中身は "50%" や "80%" という**「単位付きの文字（文字列）」**になります。
+    これならブラウザも「あ、高さ（height）を50%分だけ伸ばせばいいんだな！」と理解して、ビヨーンとバーを伸ばしてくれます。
+
+`const playbackRate = percent * (max - min) + min;`
+  * percent（0〜1）を min〜max の範囲にマッピングしています。上端（percent=0）なら 0.4 倍速、下端（percent=1）なら 4 倍速になります。
+
+`bar.style.height = height;`
+  * バー要素の高さをマウス位置に合わせて変更し、視覚的なフィードバックを与えています。
+
+`bar.textContent = playbackRate.toFixed(2) + '×';`
+  * バーに表示するテキストを更新しています。`toFixed(2)` で小数点2桁に丸めて "1.25×" のように表示します。
+
+`video.playbackRate = playbackRate;`
+  * 動画の再生速度を実際に変更しています。`playbackRate` はブラウザ標準のプロパティで、1 が通常速度です。
+
+`speed.addEventListener('mousemove', handleMove);`
+  * .speed 要素上でマウスを動かすたびに handleMove を呼び出すよう登録しています。
+
+
+
+
+---
+
+
+
+
 ## Day 27:JavaScript Interface Challenge: Click and Drag to Scroll (2026/03/27)
 ## 学んだこと
 
@@ -504,10 +571,10 @@
 
 4. `.join('')`
      `役割`  map で作った「タグの配列」を、一つの長い文字列に連結しています。
-<!--
-5. `voicesDropdown.innerHTML = ...`
-     `役割`  最終的に出来上がったHTMLの塊を、画面上のドロップダウンメニュー
-            の中身としてガバッと流し込んでいます。 -->
+
+<!-- 5. `voicesDropdown.innerHTML = ...` -->
+  `役割`  最終的に出来上がったHTMLの塊を、画面上のドロップダウンメニュー
+            の中身としてガバッと流し込んでいます。
 
 1. `msg.voice = voices.find(...)`
     `役割` ブラウザが持っている「声のリスト（voices）」の中から、今ユーザーが選択した
