@@ -1,5 +1,77 @@
 # JavaScript30 学習記録
 
+## Day 30: Make a Whack A Mole Game with Vanilla JS (2026/03/27)
+## 学んだこと
+
+###　用語解説
+
+`Math.random()` の役割
+  一言で言うと、**「0以上1未満の、バラバラな数字（乱数）をひとつ作り出す」**魔法の言葉です。
+`setTimeout`	キッチンタイマー（ピピピッとなったら終わり）	1回だけ
+`setInterval`	目覚まし時計のスヌーズ（止めるまで繰り返す）	ずっと繰り返す
+`例えば`
+setTimeout(() => {
+  console.log("3秒経ちました！");
+}, 3000); // 3000ミリ秒 ＝ 3秒
+
+### コード解説
+
+`const holes = document.querySelectorAll('.hole');` → HTMLの中にある「穴」要素を全部まとめて取得して変数に入れている
+`const scoreBoard = document.querySelector('.score');` → スコアを表示するHTML要素を1つ取得している
+`const moles = document.querySelectorAll('.mole');` → HTMLの中にある「モグラ」要素を全部まとめて取得している
+`let lastHole;` → 直前に使った穴を覚えておくための変数（同じ穴が連続して選ばれないようにするため）
+`let timeUp = false;` → ゲームが終わったかどうかを管理するフラグ（falseで「まだ終わってない」）
+`let score = 0;` → 現在のスコアを数える変数
+
+`function randomTime(min, max)` → min〜maxの範囲でランダムなミリ秒数を返す関数
+`Math.random() * (max - min) + min` → min以上max以下のランダムな数を作る計算
+`Math.round(...)` → 小数点を四捨五入して整数にする
+
+`function randomHole(holes)` → ランダムに穴を1つ選ぶ関数
+`Math.floor(Math.random() * holes.length)` → 配列の中からランダムなインデックス番号を作る
+`if (hole === lastHole)` → 前回と同じ穴が選ばれた場合は、もう一度やり直す（同じ穴の連続を防ぐ）
+`return randomHole(holes);` → 自分自身をもう一度呼び出す（再帰処理）
+`lastHole = hole;` → 選んだ穴を「前回の穴」として記録しておく
+
+なぜ return が2回出てくるの？
+このコードには return が2ヶ所あります。これがこの関数の面白いところです。
+
+1つ目の return randomHole(holes);:
+「同じ穴だったから、やり直し！やり直した結果をそのまま返して！」という意味です。
+
+2つ目の return hole;:
+「よし、新しい穴が見つかった！これを最終的な答えとして採用するぞ！」という意味です。
+
+もし最後に return hole; がないと、この関数を呼び出した人は「結局どの穴を使えばいいの？」と、空っぽの手（undefined）を渡されることになってしまいます。
+
+`function peep()` → モグラを穴から出し入れさせる関数
+`hole.classList.add('up');` → 穴に `up` クラスを付けてモグラを上に出す（CSSアニメーションで動く）
+`setTimeout(() => { ... }, time)` → time ミリ秒後に処理を実行する（モグラを引っ込める）
+`hole.classList.remove('up');` → `up` クラスを外してモグラを引っ込める
+`if (!timeUp) peep();` → ゲームがまだ終わっていなければ peep() をまた呼び出して繰り返す
+
+`function startGame()` → スタートボタンを押したときに呼ばれる関数
+`scoreBoard.textContent = 0;` → スコア表示を0にリセットする
+`timeUp = false;` → ゲーム終了フラグをリセットする
+`score = 0;` → スコア変数をリセットする
+`peep();` → モグラを出し始める
+`setTimeout(() => timeUp = true, 10000)` → 10秒後に timeUp を true にしてゲームを終わらせる
+
+`function bonk(e)` → モグラをクリックしたときに呼ばれる関数
+`if(!e.isTrusted) return;` → 本物のクリック操作か確認し、プログラムで自動生成した偽クリックは無効にする（チート防止）
+`score++;` → スコアを1増やす
+`this.parentNode.classList.remove('up');` → クリックしたモグラの親要素（穴）から `up` クラスを外してモグラを引っ込める
+`scoreBoard.textContent = score;` → 画面のスコア表示を最新の点数に更新する
+
+`moles.forEach(mole => mole.addEventListener('click', bonk));` → 全てのモグラにクリックイベントを設定し、クリックされたら bonk 関数が動くようにする
+
+
+
+---
+
+
+
+
 ## Day 29: Vanilla JS Countdown Timer (2026/03/27)
 ## 学んだこと
 
@@ -816,7 +888,7 @@
 
   4. `'mouseenter'`: 反応するタイミングの名前（これが決まり文句）。
 
-  5.` highlightLink`: 実行する関数の名前。
+  5. `highlightLink`: 実行する関数の名前。
 
 ### 「なぜスクロールでズレるのか？」
 
