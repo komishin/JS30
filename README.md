@@ -1,5 +1,131 @@
 # JavaScript30 学習記録
 
+## Day 29: Vanilla JS Countdown Timer (2026/03/27)
+## 学んだこと
+
+#### 最初の変数は、HTMLにJSから伝えるためにある
+
+### 用語解説
+
+`setInterval` 「1秒おきにこの処理をずっとやって！」と命令する。
+`clearInterval` 「さっきの繰り返し、もうやめていいよ！」と終了させる。
+`secondsLeft` 日本語で残りの時間の秒数
+`'button'`	タグ名で探す	document.querySelectorAll('button')
+`'.btn'`	クラス名で探す	document.querySelectorAll('.btn')
+`'[data-time]'`	属性名で探す	document.querySelectorAll('[data-time]')
+
+
+
+### コード解説
+
+`let countdown;`
+  * タイマーのID（番号）を入れる箱を用意しています。最初は空で、後から `setInterval` が返す番号を入れます。
+  一番上に書いておくことで、すべての関数が同じ countdown という変数にアクセスできるようになります。
+
+`const timerDisplay = document.querySelector('.display__time-left');`
+  * 「残り時間」を表示する画面上の要素を取得しています。
+
+`const endTime = document.querySelector('.display__end-time');`
+  * 「何時に戻ってくるか」を表示する要素を取得しています。
+
+`const buttons = document.querySelectorAll('[data-time]');`
+  * `data-time` という属性を持つボタン（例：20分、5分など）を全部まとめて取得しています。
+
+`function timer(seconds) {`
+  * カウントダウンを開始する関数です。「何秒カウントするか」を引数で受け取ります。
+
+`clearInterval(countdown);`
+  * 前のタイマーが動いていたら止めます。ボタンを連続で押したとき、二重に動かないようにするための処理です。
+
+`const now = Date.now();`
+  * 今この瞬間の時刻をミリ秒（数字）で取得しています。
+
+`const then = now + seconds * 1000;`
+  * 「今 + 秒数 × 1000」で、タイマーが終わる時刻（ミリ秒）を計算しています。1000をかけるのはミリ秒に変換するためです。
+
+`displayTimeLeft(seconds);`
+  * 最初の残り時間をすぐ画面に表示します。`setInterval` は1秒後に動くため、最初の1秒間を埋めるために先に呼びます。
+
+`displayEndTime(then);`
+  * 終了時刻（「〇時〇分に戻ります」）を画面に表示します。
+
+`countdown = setInterval(() => { ... }, 1000);`
+  * 1000ミリ秒（1秒）ごとに中の処理を繰り返します。返ってきたIDを `countdown` に入れておきます。
+
+`const secondsLeft = Math.round((then - Date.now()) / 1000);`
+  * 「終了時刻 − 今の時刻」でミリ秒の差を求め、1000で割って秒数に変換しています。`Math.round` で四捨五入しています。
+
+`if(secondsLeft < 0) { clearInterval(countdown); return; }`
+  * 残り時間がマイナスになったら、タイマーを止めて処理を終了します。
+
+`function displayTimeLeft(seconds) {`
+  * 残り秒数を「分:秒」の形に変換して画面に表示する関数です。
+
+`const minutes = Math.floor(seconds / 60);`
+  * 秒数を60で割り、小数点を切り捨てて「分」を求めています。
+
+`const remainderSeconds = seconds % 60;`
+  * 秒数を60で割ったあまりが「秒」の部分です。
+
+`const display = \`${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}\`;`
+  * 1桁の秒数には先頭に「0」を付けて「1:05」のような表示にしています。
+
+`document.title = display;`
+  * ブラウザのタブのタイトルも残り時間に変えています。タブを見るだけで残り時間がわかります。
+    HTMLのtitleで上のタブの表示
+
+`timerDisplay.textContent = display;`
+  * 画面上の残り時間表示エリアに文字を書き込んでいます。
+
+`function displayEndTime(timestamp) {`
+  * タイマー終了時刻（ミリ秒）を受け取り、「Be Back At 〇:〇〇」という形で画面に表示する関数です。
+
+`const end = new Date(timestamp);`
+  * ミリ秒の数値を `Date` オブジェクト（日時情報）に変換しています。
+
+`const hour = end.getHours();`
+  * 終了時刻の「時」を取り出しています（0〜23の数値）。
+
+`const adjustedHour = hour > 12 ? hour - 12 : hour;`
+  * 12時間表示に変換しています。13時なら13−12＝1時、のように変換します。
+
+`const minutes = end.getMinutes();`
+  * 終了時刻の「分」を取り出しています。
+
+`endTime.textContent = \`Be Back At ${adjustedHour}:${minutes < 10 ? '0' : ''}${minutes}\`;`
+  * 「Be Back At 1:05」のような文字を画面に書き込みます。1桁の分には「0」を付けます。
+
+`function startTimer() {`
+  * ボタンがクリックされたときに呼ばれる関数です。`this` はクリックされたボタンを指します。
+
+`const seconds = parseInt(this.dataset.time);`
+  * クリックされたボタンの `data-time` 属性の値（文字列）を数値に変換して秒数として取得しています。
+
+`buttons.forEach(button => button.addEventListener('click', startTimer));`
+  * 全ボタンにクリックイベントを登録しています。どれを押しても `startTimer` が呼ばれます。
+
+`document.customForm.addEventListener('submit', function(e) { ... });`
+  * フォームが送信されたときの処理を登録しています。`document.customForm` はフォームの `name` 属性で直接取得しています。
+
+`e.preventDefault();`
+  * フォーム送信時にページがリロードされるのを防いでいます。
+
+`const mins = this.minutes.value;`
+  * フォームの入力欄（`name="minutes"`）に入力された値を取得しています。
+
+`timer(mins * 60);`
+  * 入力された分数を60倍して秒数に変換し、`timer` 関数に渡してカウントダウンを開始します。
+
+`this.reset();`
+  * カウントダウン開始後、フォームの入力欄を空に戻しています。
+
+
+
+---
+
+
+
+
 ## Day 28: Video Speed Scrubber (2026/03/26)
 ## 学んだこと
 
@@ -572,7 +698,7 @@
 4. `.join('')`
      `役割`  map で作った「タグの配列」を、一つの長い文字列に連結しています。
 
-<!-- 5. `voicesDropdown.innerHTML = ...` -->
+5. `voicesDropdown.innerHTML`
   `役割`  最終的に出来上がったHTMLの塊を、画面上のドロップダウンメニュー
             の中身としてガバッと流し込んでいます。
 
